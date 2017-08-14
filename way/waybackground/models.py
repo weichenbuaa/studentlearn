@@ -80,6 +80,7 @@ class CustomProcess(models.Model):
     step = models.CharField(max_length=100, blank=True, null=True)
     rank = models.IntegerField(blank=True, null=True)
     status = models.IntegerField(blank=True, null=True)
+    content = models.CharField(max_length=260, blank=True, null=True)
     create_time = models.DateTimeField(blank=True, null=True)
     update_time = models.DateTimeField(blank=True, null=True)
 
