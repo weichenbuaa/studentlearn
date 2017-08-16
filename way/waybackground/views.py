@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import json
+
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
@@ -14,7 +16,9 @@ def index(request):
 
 #定制流程展示
 def process_add(request):
-    return render(request, 'process.html')
+    proList = CustomProcess.objects.filter(status=0).order_by('rank')
+    return render(request, 'process.html', {'proList': proList})
+
 @csrf_exempt
 def process_addresult(request):
     if request.is_ajax() and request.method == 'POST':
@@ -39,3 +43,9 @@ def process_addresult(request):
                 print proList[i]
 
     return HttpResponse('{"status":"success"}', content_type='application/json')
+
+@csrf_exempt
+def process_show(request):
+    # 从数据库中获取已经存在的流程数据，将数据在传递到前端界面
+    proList = CustomProcess.objects.filter(status=0).order_by('rank')
+    return render(request, 'process_show.html', {'proList': proList})

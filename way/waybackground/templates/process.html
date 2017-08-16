@@ -140,7 +140,7 @@
 
 							</li>
 
-							<li><a href="{%url 'process_add'%}">流程步骤</a></li>
+							<li><a href="{%url 'process_add'%}">更新流程</a></li>
 
 						</ul>
 
@@ -302,7 +302,7 @@
 
 													<div class="controls">
 
-														<input type="text" class="span6 m-wrap" name="process_step1"/>
+														<input type="text" class="span6 m-wrap" name="process_step1" value="{{proList.0.step}}"/>
 
 													</div>
 
@@ -314,7 +314,7 @@
 
 													<div class="controls">
 
-														<textarea class="span6 m-wrap" rows="6" name="step_content1" id="step_content1"></textarea>
+														<textarea class="span6 m-wrap" rows="6" name="step_content1" id="step_content1">{{proList.0.content}}</textarea>
 
 													</div>
 
@@ -332,7 +332,7 @@
 
 													<div class="controls">
 
-														<input type="text" class="span6 m-wrap" name="process_step2"/>
+														<input type="text" class="span6 m-wrap" name="process_step2" value="{{proList.1.step}}"/>
 
 													</div>
 
@@ -344,7 +344,7 @@
 
 													<div class="controls">
 
-														<textarea class="span6 m-wrap" rows="6" name="step_content2" id="step_content2"></textarea>
+														<textarea class="span6 m-wrap" rows="6" name="step_content2" id="step_content2">{{proList.1.content}}</textarea>
 
 													</div>
 
@@ -362,7 +362,7 @@
 
 													<div class="controls">
 
-														<input type="text" class="span6 m-wrap" name="process_step3"/>
+														<input type="text" class="span6 m-wrap" name="process_step3" value="{{proList.2.step}}"/>
 
 													</div>
 
@@ -374,7 +374,7 @@
 
 													<div class="controls">
 
-														<textarea class="span6 m-wrap" rows="6" name="step_content3" id="step_content3"></textarea>
+														<textarea class="span6 m-wrap" rows="6" name="step_content3" id="step_content3">{{proList.2.content}}</textarea>
 
 													</div>
 
@@ -392,7 +392,7 @@
 
 													<div class="controls">
 
-														<input type="text" class="span6 m-wrap" name="process_step4"/>
+														<input type="text" class="span6 m-wrap" name="process_step4" value="{{proList.3.step}}"/>
 
 													</div>
 
@@ -404,7 +404,7 @@
 
 													<div class="controls">
 
-														<textarea class="span6 m-wrap" rows="6" name="step_content4" id="step_content4"></textarea>
+														<textarea class="span6 m-wrap" rows="6" name="step_content4" id="step_content4">{{proList.3.content}}</textarea>
 
 													</div>
 
@@ -422,7 +422,7 @@
 
 													<div class="controls">
 
-														<input type="text" class="span6 m-wrap" name="process_step5"/>
+														<input type="text" class="span6 m-wrap" name="process_step5" value="{{proList.4.step}}"/>
 
 													</div>
 
@@ -434,7 +434,7 @@
 
 													<div class="controls">
 
-														<textarea class="span6 m-wrap" rows="6" name="step_content5" id="step_content5"></textarea>
+														<textarea class="span6 m-wrap" rows="6" name="step_content5" id="step_content5">{{proList.4.content}}</textarea>
 
 													</div>
 
