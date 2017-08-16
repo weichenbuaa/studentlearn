@@ -20,6 +20,7 @@ from waybackground.views import *
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^index/$', index,name='index'),
-    url(r'^process/$', process_add,name='process_add'),
+    url(r'^process_add/$', process_add,name='process_add'),
     url(r'^process_addresult/$', process_addresult,name='process_addresult'),
+    url(r'^process_show/$', process_show,name='process_show'),
 ]
