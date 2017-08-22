@@ -80,9 +80,9 @@ class CustomProcess(models.Model):
     step = models.CharField(max_length=100, blank=True, null=True)
     rank = models.IntegerField(blank=True, null=True)
     status = models.IntegerField(blank=True, null=True)
-    content = models.CharField(max_length=260, blank=True, null=True)
     create_time = models.DateTimeField(blank=True, null=True)
     update_time = models.DateTimeField(blank=True, null=True)
+    content = models.CharField(max_length=260, blank=True, null=True)
 
     class Meta:
         managed = False
@@ -107,7 +107,7 @@ class Customer(models.Model):
     wechat = models.CharField(max_length=100, blank=True, null=True)
     qq = models.CharField(max_length=18, blank=True, null=True)
     name = models.CharField(max_length=50, blank=True, null=True)
-    country = models.CharField(max_length=50, blank=True, null=True)
+    destination = models.CharField(max_length=50, blank=True, null=True)
     peoples = models.IntegerField(blank=True, null=True)
     start_date = models.DateField(blank=True, null=True)
     end_date = models.DateField(blank=True, null=True)
@@ -115,6 +115,11 @@ class Customer(models.Model):
     context = models.CharField(max_length=500, blank=True, null=True)
     status = models.IntegerField(blank=True, null=True)
     create_time = models.DateTimeField(blank=True, null=True)
+    gender = models.IntegerField(blank=True, null=True)
+    days = models.IntegerField(blank=True, null=True)
+    air_tickets = models.IntegerField(blank=True, null=True)
+    visa = models.IntegerField(blank=True, null=True)
+    budget = models.FloatField(blank=True, null=True)
 
     class Meta:
         managed = False
