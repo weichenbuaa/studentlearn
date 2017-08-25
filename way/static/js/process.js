@@ -233,6 +233,7 @@ var Process = function () {
                     success: function (data) {
                         if (data.status == 'success') {
                             alert("success");
+                            // window.location.href = "/process_show/";
                         } else {
                             alert("failed");
                             return false;
