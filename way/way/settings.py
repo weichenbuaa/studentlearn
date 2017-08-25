@@ -89,6 +89,13 @@ DATABASES = {
         'HOST': '127.0.0.1',
         'PORT': '3306',
 
+        # 'ENGINE': 'django.db.backends.mysql',
+        # 'NAME': 'way',
+        # 'USER': 'way',
+        # 'PASSWORD': 'way',
+        # 'HOST': '210.44.16.88',
+        # 'PORT': '3616',
+
     }
 }
 
