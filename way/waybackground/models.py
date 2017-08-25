@@ -115,6 +115,7 @@ class Customer(models.Model):
     context = models.CharField(max_length=500, blank=True, null=True)
     status = models.IntegerField(blank=True, null=True)
     create_time = models.DateTimeField(blank=True, null=True)
+    update_time = models.DateTimeField(blank=True, null=True)
     gender = models.IntegerField(blank=True, null=True)
     days = models.IntegerField(blank=True, null=True)
     air_tickets = models.IntegerField(blank=True, null=True)
@@ -124,6 +125,15 @@ class Customer(models.Model):
     class Meta:
         managed = False
         db_table = 'customer'
+
+
+class CustomerPartener(models.Model):
+    partner = models.CharField(primary_key=True, max_length=50)
+    values = models.CharField(max_length=50, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'customer_partener'
 
 
 class DjangoAdminLog(models.Model):
