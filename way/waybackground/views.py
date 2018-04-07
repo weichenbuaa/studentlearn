@@ -1,20 +1,94 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import json
-import string
-
 import datetime
-from django.http import HttpResponse
-from django.shortcuts import render
-from django.views.decorators.csrf import csrf_exempt
+import string
 import time
+
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render
+from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
 from waybackground.models import *
+
 
 # Create your views here.
 
+# @login_required
 def index(request):
-    return render(request, 'index.html')
+    contextdict = {}
+    if request.user.is_authenticated():
+        contextdict['username'] = request.user.username
+    return render(request, 'index.html', contextdict)
+
+#展示登录界面
+def login(request):
+    return render(request, 'loginWay.html')
+
+# 登录authentication
+def authenticate_check(self, username=None, password=None):
+    try:
+        o = Staff.objects.get(email=username, password=password)
+        return o
+    except Staff.DoesNotExist:
+        try:
+            o = Staff.objects.get(account=username, password=password)
+            return o
+        except Staff.DoesNotExist:
+            return None
+
+
+#去做登录，校验staff的用户名密码，
+#也可以邮箱登录
+def log(request):
+    username = request.POST['log_username']
+    password = request.POST['log_password']
+    user = authenticate_check(request, username=username, password=password)
+    if user:
+        login(request)
+        return HttpResponseRedirect(reverse('index'))
+    else:
+        return render(request, 'loginWay.html', {
+            'login_err': 'Please recheck your username or password !'
+        })
+
+
+# 旅游客户注册,是旅游的用户，但是注册到用户staff中
+# 1、用户的用户名register_username就是account
+# 2、旅游客户的权限，暂时直接写roleid = 0,
+# 后面写好权限管理role表之后，先从客户中查找到客户role的id
+# 3、last_sign_time,因为第一次注册，上次登录时间就是nowTime
+def customer_register(request):
+    register_username = request.POST['register_username']
+    register_password = request.POST['register_password']
+    register_email = request.POST['register_email']
+    nowTime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+    staffList = Staff.objects.filter(account=register_username)
+    if (len(staffList) == 0):
+        staff = Staff(account=register_username, password=register_password, role_id=0,
+                      last_sign_time=nowTime, create_time=nowTime, update_time=nowTime, email=register_email)
+        staff.save()
+
+    return render(request, 'loginWay.html')
+
+
+#注册时，检查用户名是不是已经存在，
+#后面看看是否去掉用户名而直接用邮箱注册
+#用户名已经存在，返回false
+#用户名不存在，返回true
+@csrf_exempt
+def check_username(request):
+    register_username = request.POST['register_username']
+    print register_username
+    staffList = Staff.objects.filter(account=register_username)
+
+    if (len(staffList) == 0):
+        response_str = "true"
+        return  HttpResponse("%s" % response_str)
+    else:
+        response_str = "false"
+        return HttpResponse("%s" % response_str)
+
 
 #定制流程展示
 def process_add(request):

@@ -146,3 +146,7 @@ STATIC_URL = '/static/'
 TEMPLATE_DIRS = (os.path.join(BASE_DIR,  'waybackground/templates'),)
 
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
+
+LOGIN_URL = '/login/'
+
+LOGIN_REDIRECT_URL='/'
