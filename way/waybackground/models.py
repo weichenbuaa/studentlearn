@@ -253,6 +253,7 @@ class RoleMenu(models.Model):
 
 class Staff(models.Model):
     account = models.CharField(max_length=20, blank=True, null=True)
+    email = models.CharField(max_length=45, blank=True, null=True)
     password = models.CharField(max_length=32, blank=True, null=True)
     role_id = models.IntegerField(blank=True, null=True)
     last_sign_time = models.DateTimeField(blank=True, null=True)
