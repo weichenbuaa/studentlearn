@@ -235,7 +235,7 @@ class Role(models.Model):
     role = models.CharField(max_length=50, blank=True, null=True)
     status = models.IntegerField(blank=True, null=True)
     create_time = models.DateTimeField(blank=True, null=True)
-    upate_time = models.DateTimeField(blank=True, null=True)
+    update_time = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         managed = False

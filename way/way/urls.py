@@ -31,4 +31,11 @@ urlpatterns = [
     url(r'^customer_add_result/$', customer_add_result,name='customer_add_result'),
     url(r'^customer_show/$', customer_show,name='customer_show'),
     url(r'^customer_edit/$', customer_edit,name='customer_edit'),
+    url(r'^role_show/$', role_show,name='role_show'),
+    url(r'^role_add/$', role_add, name='role_add'),
+    url(r'^role_add_do/$', role_add_do, name='role_add_do'),
+    url(r'^role_edit/$', role_edit, name='role_edit'),
+    url(r'^role_edit_do/$', role_edit_do, name='role_edit_do'),
+    url(r'^role_delete_do/$', role_delete_do, name='role_delete_do'),
+
 ]

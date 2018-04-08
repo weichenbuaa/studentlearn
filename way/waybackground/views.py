@@ -21,9 +21,11 @@ def index(request):
         contextdict['username'] = request.user.username
     return render(request, 'index.html', contextdict)
 
-#展示登录界面
+
+# 展示登录界面
 def login(request):
     return render(request, 'loginWay.html')
+
 
 # 登录authentication
 def authenticate_check(self, username=None, password=None):
@@ -38,8 +40,8 @@ def authenticate_check(self, username=None, password=None):
             return None
 
 
-#去做登录，校验staff的用户名密码，
-#也可以邮箱登录
+# 去做登录，校验staff的用户名密码，
+# 也可以邮箱登录
 def log(request):
     username = request.POST['log_username']
     password = request.POST['log_password']
@@ -72,10 +74,10 @@ def customer_register(request):
     return render(request, 'loginWay.html')
 
 
-#注册时，检查用户名是不是已经存在，
-#后面看看是否去掉用户名而直接用邮箱注册
-#用户名已经存在，返回false
-#用户名不存在，返回true
+# 注册时，检查用户名是不是已经存在，
+# 后面看看是否去掉用户名而直接用邮箱注册
+# 用户名已经存在，返回false
+# 用户名不存在，返回true
 @csrf_exempt
 def check_username(request):
     register_username = request.POST['register_username']
@@ -84,16 +86,119 @@ def check_username(request):
 
     if (len(staffList) == 0):
         response_str = "true"
-        return  HttpResponse("%s" % response_str)
+        return HttpResponse("%s" % response_str)
     else:
         response_str = "false"
         return HttpResponse("%s" % response_str)
 
 
-#定制流程展示
+# 角色列表
+def role_show(request):
+    roles = get_all_roles()
+    return render(request, 'role_show.html', {'roles': roles})
+
+
+# 创建角色界面
+def role_add(request):
+    return render(request, 'role_add.html')
+
+
+# 创建角色执行
+def role_add_do(request):
+    role = request.POST['role']
+    status = string.atoi(request.POST['status'])
+    nowTime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+
+    roleTable = Role(role=role, status=status,
+                     create_time=nowTime, update_time=nowTime)
+    roleTable.save()
+
+    roles = get_all_roles()
+    return render(request, 'role_show.html', {'roles': roles})
+
+
+# 系统管理、角色管理，角色编辑修改
+@csrf_exempt
+def role_edit(request):
+    param1 = request.GET['param1']
+    roles = Role.objects.filter(id=param1)
+    if (len(roles) == 1):
+        role = roles[0]
+        dic = {'role': role}
+        return render(request, 'role_edit.html', dic)
+    else:
+        return render(request, 'role_add.html')
+
+
+# 系统管理、角色管理，
+# 角色编辑修改角色执行
+def role_edit_do(request):
+    role_id = request.POST['role_id']
+    role = request.POST['role']
+    status = string.atoi(request.POST['status'])
+    nowTime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+
+    try:
+        roleList = Role.objects.filter(id=role_id)
+        if (len(roleList) == 1):
+            Role.objects.filter(id=role_id).update(role=role, status=status,
+                                                  update_time=nowTime)
+        elif (len(roleList) == 0):
+            roleTable = Role(role=role, status=status,
+                             create_time=nowTime, update_time=nowTime)
+            roleTable.save()
+
+    except Role.DoesNotExist:
+        roleTable = Role(role=role, status=status,
+                         create_time=nowTime, update_time=nowTime)
+        roleTable.save()
+
+    roles = get_all_roles()
+    return render(request, 'role_show.html', {'roles': roles})
+
+
+# 系统管理、角色管理，
+# 角色删除执行，status=1是删除状态
+# 根据id查找出来，status改为1
+@csrf_exempt
+def role_delete_do(request):
+    role_id = request.POST['role_id']
+    print role_id
+    nowTime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+
+    try:
+        roleList = Role.objects.filter(id=role_id)
+        if (len(roleList) == 1):
+            Role.objects.filter(id=role_id).update(status=1,update_time=nowTime)
+            return HttpResponse('{"status":"success"}', content_type='application/json')
+        else:
+            return HttpResponse('{"status":"false"}', content_type='application/json')
+
+    except Role.DoesNotExist:
+        print 'no role to delete'
+        return HttpResponse('{"status":"false"}', content_type='application/json')
+
+
+# 系统管理之角色管理
+# 从数据库中获取所有的role数据
+# exclude一些删除数据,删除状态是status=1
+def get_all_roles():
+    roles = Role.objects.exclude(status=1)
+    for item in roles:
+        # 时间格式
+        temp = item.create_time.strftime('%d/%m/%Y')
+        item.create_time = temp
+        temp = item.update_time.strftime('%d/%m/%Y')
+        item.update_time = temp
+
+    return roles
+
+
+# 定制流程展示
 def process_add(request):
     proList = CustomProcess.objects.filter(status=0).order_by('rank')
     return render(request, 'process.html', {'proList': proList})
+
 
 @csrf_exempt
 def process_addresult(request):
@@ -101,17 +206,18 @@ def process_addresult(request):
         proList = request.POST.getlist('proList')
 
         for i in range(len(proList)):
-            if(0==i%2):
-                #print proList[i]
+            if (0 == i % 2):
+                # print proList[i]
                 # 值是process
-                pro = CustomProcess.objects.filter(rank=i/2+1)
+                pro = CustomProcess.objects.filter(rank=i / 2 + 1)
                 # 查找是否已经存在，
-                nowTime = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
-                if (1==len(pro)):
-                    CustomProcess.objects.filter(rank=i/2+1).update(step=proList[i],rank=i/2+1,content=proList[i+1],
-                                                                    status=0,update_time=nowTime)
-                elif(0==len(pro)):
-                    create_process = CustomProcess(step=proList[i], rank=i/2+1,content=proList[i+1],
+                nowTime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+                if (1 == len(pro)):
+                    CustomProcess.objects.filter(rank=i / 2 + 1).update(step=proList[i], rank=i / 2 + 1,
+                                                                        content=proList[i + 1],
+                                                                        status=0, update_time=nowTime)
+                elif (0 == len(pro)):
+                    create_process = CustomProcess(step=proList[i], rank=i / 2 + 1, content=proList[i + 1],
                                                    status=0, create_time=nowTime)
                     create_process.save()
                     # 不存在，添加数据。
@@ -120,11 +226,13 @@ def process_addresult(request):
 
     return HttpResponse('{"status":"success"}', content_type='application/json')
 
+
 @csrf_exempt
 def process_show(request):
     # 从数据库中获取已经存在的流程数据，将数据在传递到前端界面
     proList = CustomProcess.objects.filter(status=0).order_by('rank')
     return render(request, 'process_show.html', {'proList': proList})
+
 
 # 旅游客户信息管理
 def customer_add(request):
@@ -133,7 +241,8 @@ def customer_add(request):
     for p in partner:
         l.append(p.values)
     dic = {'partner': l}
-    return render(request, 'customer_add.html',dic)
+    return render(request, 'customer_add.html', dic)
+
 
 # 旅游客户信息管理(添加和编辑都在这个函数里)
 def customer_add_result(request):
@@ -173,22 +282,24 @@ def customer_add_result(request):
     print context
 
     customerList = Customer.objects.filter(id=customer_id)
-    if (len(customerList)==0):
+    if (len(customerList) == 0):
         customer = Customer(name=name, mobile=mobile, email=email, wechat=wechat, qq=qq,
                             destination=destination, start_date=start_date, end_date=end_date,
                             days=days, partner=partner, peoples=peoples, budget=budget,
                             air_tickets=air_tickets, visa=visa, context=context,
                             create_time=nowTime, status=0)
         customer.save()
-    elif (len(customerList)==1):
+    elif (len(customerList) == 1):
         Customer.objects.filter(id=customer_id).update(name=name, mobile=mobile, email=email, wechat=wechat, qq=qq,
-                                                       destination=destination, start_date=start_date, end_date=end_date,
+                                                       destination=destination, start_date=start_date,
+                                                       end_date=end_date,
                                                        days=days, partner=partner, peoples=peoples, budget=budget,
                                                        air_tickets=air_tickets, visa=visa, context=context,
                                                        update_time=nowTime, status=0)
 
     custermers = get_all_customers()
     return render(request, 'customer_show.html', {'custermers': custermers})
+
 
 # 旅游客户信息管理
 # 从数据库中获取所有的customer数据
@@ -214,6 +325,7 @@ def get_all_customers():
 
     return custermers
 
+
 # 旅游客户信息管理
 # 从数据库中获取customer对应的所有的partner数据
 def get_customer_partner():
@@ -223,16 +335,18 @@ def get_customer_partner():
         l.append(p.values)
     return l
 
+
 # 旅游客户信息管理
 def customer_show(request):
     custermers = get_all_customers()
-    return render(request, 'customer_show.html',{'custermers': custermers})
+    return render(request, 'customer_show.html', {'custermers': custermers})
+
 
 # 旅游客户信息管理
 @csrf_exempt
 def customer_edit(request):
     param1 = request.GET['param1']
-    customers = Customer.objects.filter(id=param1,status=0)
+    customers = Customer.objects.filter(id=param1, status=0)
     if (len(customers) == 1):
         customer = customers[0]
         # 时间格式
